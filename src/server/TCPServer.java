@@ -70,15 +70,18 @@ public class TCPServer {
        
        @Override 
        public void run() {
+           //TODO: Hier kommen noch die empfangenen nachrichten von client
            String messageBuffer = "";
            
            while(threadRunning) {
                                              
                //Hier kommt die pruefung rein, ob der eingegebene Befehl von Client gueltig ist
-               switch(messageBuffer) {
+               switch(serverCommand.checkCommand(messageBuffer)) {
                    case "new":  serverCommand.newCommand(messageBuffer); break;
+                   case "info":  serverCommand.infoCommand(); break;
+                   case "bye":  serverCommand.newCommand(messageBuffer); break;
                        
-//                   default: "c";
+                  default: serverCommand.commandNotExisted();
                }
                
            }
