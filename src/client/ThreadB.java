@@ -1,5 +1,8 @@
 package client;
 
-public class ThreadB {
-    
+public class ThreadB extends Thread {
+    @Override
+    public void run() {
+        
+    }
 }

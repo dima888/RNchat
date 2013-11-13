@@ -67,6 +67,8 @@ public class Login extends javax.swing.JFrame {
         loginTextField = new javax.swing.JTextField();
         benutzerName = new javax.swing.JLabel();
         loginButton = new javax.swing.JButton();
+        ipTextField = new javax.swing.JTextField();
+        ipLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Chat");
@@ -91,6 +93,15 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
+        ipTextField.setText("localhost");
+        ipTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ipTextFieldActionPerformed(evt);
+            }
+        });
+
+        ipLabel.setText("IP:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -99,25 +110,38 @@ public class Login extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(benutzerName)
-                            .addComponent(loginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(chatAnwendung)))
+                        .addComponent(loginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(67, 67, 67)
+                        .addContainerGap()
+                        .addComponent(ipLabel))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(benutzerName))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(ipTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(chatAnwendung))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(66, 66, 66)
                         .addComponent(loginButton)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(4, 4, 4)
+                .addContainerGap()
                 .addComponent(chatAnwendung)
+                .addGap(11, 11, 11)
+                .addComponent(ipLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ipTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(benutzerName)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(loginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(loginButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -129,26 +153,36 @@ public class Login extends javax.swing.JFrame {
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
         //eingegebenen Usernamen holen
         String userName = loginTextField.getText();
+        String ip = ipTextField.getText();
+        System.out.println("Eingegebener Username: " + userName + " eingegebene IP: " + ip);
         //neuen User beim Server anmelden
-        //TODO
-        //Name vom Server Akzeptiert oder nicht ?
-        //Falls ja --> ChatApplication Starten und altes Fenster schließen
-        new ChatApplication().setVisible(true);
-        this.dispose();
-        //Falls nein --> 
-        //Fehlermeldung vom Server ausgeben
-        //JOptionPane.showMessageDialog(null, "MESSAGE");
+        Client userClient = new Client(userName, ip);
+        //Eingegebner Username frei ?
+        if(! userClient.getUserAccepted()) {
+            //Falls ja --> ChatApplication Starten und altes Fenster schließen
+            new ChatApplication().setVisible(true);
+            this.dispose();
+        } else {
+            //Falls nein --> Fehlermeldung
+            JOptionPane.showMessageDialog(null, "MESSAGE");
+        }
     }//GEN-LAST:event_loginButtonActionPerformed
 
     private void loginTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginTextFieldActionPerformed
         //Wird bei drücken des ENTER knopfs ausgeführt
         loginButtonActionPerformed(evt);
     }//GEN-LAST:event_loginTextFieldActionPerformed
+
+    private void ipTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ipTextFieldActionPerformed
+        loginTextFieldActionPerformed(evt);
+    }//GEN-LAST:event_ipTextFieldActionPerformed
     
     //****************** GENERIERTE ATTRIBUTE *****************************
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel benutzerName;
     private javax.swing.JLabel chatAnwendung;
+    private javax.swing.JLabel ipLabel;
+    private javax.swing.JTextField ipTextField;
     private javax.swing.JButton loginButton;
     private javax.swing.JTextField loginTextField;
     // End of variables declaration//GEN-END:variables
