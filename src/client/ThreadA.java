@@ -65,7 +65,7 @@ public class ThreadA extends Thread {
            }
            
            //User akzeptiert und nicht interrupted
-           while(! isInterrupted() && userAccepted) {
+           while((! this.isInterrupted()) && userAccepted) {
                //Liste der aktuell angemeldeten Users anfordern
                writeToServer("INFO");
                //Antwort des Servers
@@ -76,11 +76,16 @@ public class ThreadA extends Thread {
                this.sleep(5000);
            }
         } catch (UnknownHostException ex) {
-            System.err.println(ex);
+            System.err.println("EXCEPTION IN THREAD A: " + ex);
         } catch (IOException ex) {
-            System.err.println(ex);
+            gui.userDeclined("Verbindung zum Server nicht möglich!");
         } catch (InterruptedException ex) {
-            this.interrupt();
+            try {
+                writeToServer("BYE");
+                this.interrupt();
+            } catch (IOException ex1) {
+                System.err.println("THREAD A KONNTE SICH NICHT ABMELDEN");
+            }
         }
     }
     
@@ -89,7 +94,7 @@ public class ThreadA extends Thread {
      * @return boolean - true wenn der benutzerName acceptiert wurde, sonst false
      */
     public boolean userAccepted() {
-        return false;
+        return userAccepted;
     }
            
     //********************** PRIVATE METHODEN ******************************

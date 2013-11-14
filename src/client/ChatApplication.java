@@ -1,8 +1,8 @@
 package client;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import javax.swing.JOptionPane;
 
 public class ChatApplication extends javax.swing.JFrame {
@@ -15,8 +15,13 @@ public class ChatApplication extends javax.swing.JFrame {
     //********************* KONSTRUKTOR ***************************************
     public ChatApplication() {
         initComponents();
+        //Definieren was beim Schließen der GUI passieren soll
+        //TODO
+        
         //FOKUS auf sendleiste setzten
         userNameTextField.requestFocus();
+        
+        //Client Objekt erzeugen und diese GUI übergeben
         userClient = new Client(this);
         
         //Bereich deaktivieren wenn noch nicht eingelogged
@@ -97,6 +102,7 @@ public class ChatApplication extends javax.swing.JFrame {
      private void loginArea(boolean bool) {
          this.userNameTextField.setEnabled(bool);
          this.ipTextField.setEnabled(bool);
+         this.loginButton.setEnabled(bool);
     }
     
     /**
@@ -104,7 +110,7 @@ public class ChatApplication extends javax.swing.JFrame {
      */
     private void refreshGUI() {
         //Usernamen extrahieren
-        Set<String> userNames = usersMap.keySet();
+        Collection<String> userNames = usersMap.values();
         
         //Alle Usernamen hinzufügen
         for(String userName : userNames) {
@@ -137,6 +143,11 @@ public class ChatApplication extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Chat-Anwendung");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         sendMessageTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -229,12 +240,13 @@ public class ChatApplication extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(userNameLabel)
-                    .addComponent(userNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(ipLabel)
-                    .addComponent(loginButton)
-                    .addComponent(ipTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(userNameLabel)
+                        .addComponent(userNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(loginButton)
+                        .addComponent(ipTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(receivedMessageLabel)
@@ -280,6 +292,11 @@ public class ChatApplication extends javax.swing.JFrame {
     private void ipTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ipTextFieldActionPerformed
         loginButtonActionPerformed(evt);
     }//GEN-LAST:event_ipTextFieldActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        //Wird aufgerufen when die GUI geschlossen wird --> BYE AN SERVER
+        userClient.interruptThreads();
+    }//GEN-LAST:event_formWindowClosing
 
     //****************** GENERIERTE ATTRIBUTE *****************************
     // Variables declaration - do not modify//GEN-BEGIN:variables

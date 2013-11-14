@@ -39,6 +39,7 @@ public class Client {
      * Startet die Arbeitsthreads
      */
     public void startJob() {
+        System.out.println("IN CLIENT ABFRAGE: " + a.userAccepted());
         if(a.userAccepted()) {
             b = new ThreadB(gui);
             c = new ThreadC(gui);
