@@ -18,16 +18,29 @@ public class UserManagement {
     //TODO: Pruefen ob user doppelt vorhanden ist
     private Map<String, String> accountMap = new HashMap();
     
-    Map<String, String> getAccountMap() {
+    //************GETTER************
+    synchronized Map<String, String> getAccountMap() {
         return accountMap;
+    }
+    
+    //***********SETTER**************
+    synchronized  void setAccountMap(Map<String, String> newAccountMap) {
+        accountMap.putAll(newAccountMap);
     }
     
     /**
      * Tut einen User in unsere accountMap rein, wenn der noch nicht in der accountMap vorhanden ist
      * @param String user  - User der auf unseren Server connected
      */
-    void doUserInAccountMap(String user, String hostname) {
-        accountMap.put(user, hostname) ;
+    synchronized void doUserInAccountMap(String user, String hostname) {
+        accountMap.put(user, hostname) ;    
+    }
     
+    /**
+     * Gibt der Anzahl der user aus
+     * @return 
+     */
+     synchronized public int getNumberOfUsers() {
+        return accountMap.size();
     }
 }

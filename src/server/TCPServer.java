@@ -9,6 +9,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -70,17 +72,20 @@ public class TCPServer {
        
        @Override 
        public void run() {
-           //TODO: Hier kommen noch die empfangenen nachrichten von client
+           
            String messageBuffer = "";
            
            while(threadRunning) {
+               
+               messageBuffer = readFromClient(); //Warte auf eingehende Nachricht von Client
+
                                              
                //Hier kommt die pruefung rein, ob der eingegebene Befehl von Client gueltig ist
                switch(serverCommand.checkCommand(messageBuffer)) {
-                   case "new":  serverCommand.newCommand(messageBuffer); break;
-                   case "info":  serverCommand.infoCommand(); break;
-                   case "bye":  serverCommand.newCommand(messageBuffer); break;
-                       
+//                   case "new":  serverCommand.newCommand(messageBuffer); break;
+                   case "new":  writeToClient(serverCommand.newCommand(messageBuffer))   ; break;
+                   case "info":  writeToClient(serverCommand.infoCommand())  ; break;
+                   case "bye":  writeToClient(serverCommand.newCommand(messageBuffer)); break;                       
                   default: serverCommand.commandNotExisted();
                }
                
@@ -91,18 +96,26 @@ public class TCPServer {
         * Speichert eingehende Nachrichten in den Rueckgabewert der Methode ab
         * @return String
         */
-       private String readFromClient() throws IOException {
-           String request = inFromClient.readLine();
-           System.out.println("Client write to TCPServer: " + request);
-           return request;
+       private String readFromClient() {
+           try {
+               String request = inFromClient.readLine();
+               System.out.println("Client write to TCPServer: " + request);
+               return request;
+           } catch (IOException ex) {
+               return ex.toString();
+           }
        }
        
        /**
         * Sendet eine Nachricht an einen Client 
         * @param String reply  - Die Nachricht, die an den Client gesendet wirdS
         */
-       private void writeToClient(String reply) throws IOException {
-           outToClient.writeBytes(reply + "\n");
+       private void writeToClient(String reply) {
+           try {
+               outToClient.writeBytes(reply + "\n");
+           } catch (IOException ex) {
+               Logger.getLogger(TCPServerThread.class.getName()).log(Level.SEVERE, null, ex);
+           }
            System.out.println("TCPServer write to Client: " + reply);
        }
    }

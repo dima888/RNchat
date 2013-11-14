@@ -4,6 +4,8 @@
  */
 package server;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -16,9 +18,11 @@ public class ServerCommand {
     private UserManagement userManagement;
     private static String ok = "OK\n";
     
+    private String currentHost = "whatever";
+    
     
     //******************SETTER*****************
-    public void setUserManagement(UserManagement userManagement) {
+    synchronized public void setUserManagement(UserManagement userManagement) {
         this.userManagement = userManagement;        
     }
     
@@ -30,8 +34,7 @@ public class ServerCommand {
      * Exception -> nap Spiderman (nap != new)
      * @return String
      */
-    //TODO:
-    public String newCommand(String command) {
+    synchronized public String newCommand(String command) {
         //Precondition
         if(command.isEmpty()) {
             return Error.reasonEmpty;
@@ -45,37 +48,26 @@ public class ServerCommand {
             return Error.reasonUsernameToLong;
         }       
         
-        //Nach Sonderzeichen pruefen
-        int i;
-//        for(i = 0; i < username.toCharArray().length; i++) {
-//            if(username.toCharArray()[0] == u00FCbertrag) {
-//                return Error.reasonBlankInUsername;
-//            }
-//        }                
+        //Nach Sonderzeichen oder Leerzeiche  pruefen             
+        boolean SpecialCharacter = username.matches("[a-zA-Z0-9]+");
+        if(SpecialCharacter != true) {
+            return Error.reasonSpecialCharacter;
+        }            
         
-        //Pruefen ob in username leerzeichen enthalten sind
-        for(i = 0; i < username.toCharArray().length; i++) {
-            if(username.toCharArray()[i] == 0x20) { 
-                return Error.reasonBlankInUsername;
-            }
-        }             
-        
-        //Pruefen, ob user in unserer liste vorhanden ist
-        if (userManagement.getAccountMap().isEmpty()) {
-            userManagement.doUserInAccountMap(username, "whatever");
+        //Pruefen, ob user in unserer liste vorhanden ist, wenn nicht fuege neuen hinzu
+        Map<String, String> currentAccountMap = new HashMap();
+        if (userManagement.getAccountMap().isEmpty()) {            
+            currentAccountMap.put(username, currentHost);
         } else {
-            for (Map.Entry<String, String> accoutMap : userManagement.getAccountMap().entrySet()) {
+            for (Map.Entry<String, String> accoutMap : userManagement.getAccountMap().entrySet()) {                
                 if (accoutMap.getKey().toLowerCase().compareTo(username.toLowerCase()) == 0) {
-                    System.out.println("Fuege benutzer ein");
                     return Error.reasonUserExists;
                 } else {
-                    System.out.println("Fuege benutzer ein");
-                    userManagement.doUserInAccountMap(username, "whatever");
+                    currentAccountMap.put(username, currentHost);
                 }
-            }
-        }
-
-        
+            }                    
+        }              
+        userManagement.setAccountMap(currentAccountMap);
         return ok;
     }
     
@@ -83,20 +75,29 @@ public class ServerCommand {
      * Sendet den Clienten eine Liste, wie viele Benutzer eingeloggt sind, sowie die die Hostnamen und die Benutzernamem dazu
      * @return String
      */
-    public String infoCommand() {
-        String result  = "";
-        
-        return result;
+    synchronized public String infoCommand() {
+        String result  = "LIST " + userManagement.getNumberOfUsers() + " ";        
+        for(Map.Entry<String, String> account : userManagement.getAccountMap().entrySet()) {
+            result += account.getValue() + " "; 
+            result += account.getKey() + " "; 
+        }
+        return result + "\n";
     }
     
     /**
      * Sendet an den Client Bye, loescht ihn aus der Teilnehmnerliste und schliesst die TCP-Verbindung zu Ihm
      * @return String
      */
-    //TODO:
-    public String byeComand() {
-        String result = "BYE";
+    synchronized public String byeComand() {        
+        String result = "BYE \n";
         
+        for(Map.Entry<String, String> accountMap : userManagement.getAccountMap().entrySet()) {
+            Map<String, String> currentAccountMap = new HashMap();
+            if(accountMap.getValue().compareTo(currentHost) == 0) {
+                userManagement.getAccountMap().remove(accountMap.getKey());
+                break;
+            }            
+        }        
         return result;
     }
     
@@ -105,7 +106,7 @@ public class ServerCommand {
      * @param String command  - Eingehendes Kommando von Clienten
      * @return  String
      */
-    public String checkCommand(String command) {
+    synchronized public String checkCommand(String command) {
         Scanner scanner = new Scanner(command);
         String firstPartOfcommand = scanner.next();
         firstPartOfcommand = firstPartOfcommand.toLowerCase();
@@ -132,12 +133,14 @@ public class ServerCommand {
                }
                break;
            }
-       }
-       
-        System.out.println(secondPart);
+       }      
         return secondPart;
     }
     
+    /**
+     * Braucht mal fuer die switch case in klasse TCPServer
+     * @return 
+     */
     public String commandNotExisted() {
         return Error.reasonCommandNotExisted;
     }
@@ -145,7 +148,7 @@ public class ServerCommand {
     public static void main(String[] args) {
         ServerCommand serverCommand = new ServerCommand();
         UserManagement userManagement = new UserManagement();
-        serverCommand.setUserManagement(userManagement);
+        serverCommand.setUserManagement(userManagement);     
         
     }
 }
