@@ -25,46 +25,43 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
+                          <Component id="sendMessageTextField" alignment="0" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jScrollPane1" alignment="0" min="-2" pref="301" max="-2" attributes="0"/>
                                   <Component id="sendMessageLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="receivedMessageLabel" alignment="0" min="-2" pref="143" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="userNameLabel" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Component id="userNameTextField" min="-2" pref="150" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="92" max="-2" attributes="0"/>
+                                      <Component id="ipLabel" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Component id="ipTextField" min="-2" pref="150" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="116" max="-2" attributes="0"/>
-                              <Component id="sendButton" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="sendMessageTextField" min="-2" pref="301" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="74" max="32767" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="usersLabel" min="-2" max="-2" attributes="0"/>
-                          <Component id="jScrollPane2" min="-2" pref="113" max="-2" attributes="0"/>
-                      </Group>
+                      <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="userNameLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="userNameTextField" min="-2" pref="103" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="ipLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="ipTextField" min="-2" pref="134" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="loginButton" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="282" max="-2" attributes="0"/>
+                      <Component id="sendButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="usersLabel" min="-2" max="-2" attributes="0"/>
+                  <Component id="jScrollPane2" min="-2" pref="130" max="-2" attributes="0"/>
+                  <Component id="loginButton" alignment="1" min="-2" pref="130" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -72,33 +69,31 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="userNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="userNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="ipLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="ipTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="loginButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
-                      <Component id="receivedMessageLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" min="-2" pref="187" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="sendMessageLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Component id="sendMessageTextField" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" attributes="0">
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      <Component id="usersLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" min="-2" pref="238" max="-2" attributes="0"/>
-                  </Group>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="userNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="userNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="ipLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="loginButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="ipTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="receivedMessageLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="usersLabel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="sendButton" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Component id="jScrollPane1" pref="250" max="32767" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="sendMessageLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="sendMessageTextField" min="-2" pref="32" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="sendButton" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="jScrollPane2" max="32767" attributes="0"/>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -171,6 +166,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="userNameTextField">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="userNameTextFieldActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="ipLabel">
       <Properties>
@@ -178,6 +176,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="ipTextField">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ipTextFieldActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="loginButton">
       <Properties>

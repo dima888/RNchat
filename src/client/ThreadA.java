@@ -54,22 +54,25 @@ public class ThreadA extends Thread {
            
            //Chatnamen an Server schicken --> BEISPIEL: NEW Flah
            writeToServer("NEW " + userName);
+           String answer = readFromServer();
            
            //Antwort des Servers auslesen
-//           if(readFromServer().equals("OK")) {
-//               gui.userAccepted();
-//               userAccepted = true;
-//           } else {
-//               gui.userNotAccepted();
-//           }
+           if(answer.equals("OK")) {
+               userAccepted = true;
+               gui.userAccepted();
+           } else {
+               gui.userDeclined(answer);
+           }
            
            //User akzeptiert und nicht interrupted
            while(! isInterrupted() && userAccepted) {
                //Liste der aktuell angemeldeten Users anfordern
                writeToServer("INFO");
                //Antwort des Servers
-               String answer = readFromServer();
-               //Usersliste in der GUI aktualisieren
+               answer = readFromServer();
+               //Aktuallisert die userList in der GUI
+               refreshUsersList(answer);
+               //5 Sekunden schlafen / warten
                this.sleep(5000);
            }
         } catch (UnknownHostException ex) {
@@ -88,19 +91,6 @@ public class ThreadA extends Thread {
     public boolean userAccepted() {
         return false;
     }
-    
-    private void refreshUsersList(String usersList) {
-        Map<String, String> usersMap = new HashMap<>();
-        Scanner scanner = new Scanner(usersList);
-        scanner.next(); //Liefert --> LIST
-        
-        int i = Integer.parseInt(scanner.next()); //Liefert --> ANZAHL der folgenden Tupel
-        for(; i > 0; i--) {
-            usersMap.put(scanner.next(), scanner.next());
-        }
-        
-        
-    }
            
     //********************** PRIVATE METHODEN ******************************
     private void writeToServer(String request) throws IOException {
@@ -114,5 +104,23 @@ public class ThreadA extends Thread {
         String reply = inFromServer.readLine();
         System.out.println("TCP Client got from Server: " + reply);
         return reply;
+    }
+    
+    /**
+     * Aktualisiert die Liste der angemeldeten Users in der GUI
+     * @param String usersList - erwartet die Antwort des Servers auf die Anfrage
+     * INFO
+     */
+    private void refreshUsersList(String usersList) {
+        Map<String, String> usersMap = new HashMap<>();
+        Scanner scanner = new Scanner(usersList);
+        scanner.next(); //Liefert --> LIST
+        
+        int i = Integer.parseInt(scanner.next()); //Liefert --> ANZAHL der folgenden Tupel
+        for(; i > 0; i--) {
+            usersMap.put(scanner.next(), scanner.next());
+        }
+        
+        gui.addUsers(usersMap);
     }
 }

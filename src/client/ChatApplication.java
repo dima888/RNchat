@@ -2,22 +2,55 @@ package client;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import javax.swing.JOptionPane;
 
 public class ChatApplication extends javax.swing.JFrame {
 
-    //******************** ATTRIBUTE ******************************
+    //*************************** ATTRIBUTE ***********************************
     private Client userClient;
     private Map<String, String> usersMap = new HashMap<>();
+    private boolean loggedIn = false;
     
-    //****************** KONSTRUKTOR ***************************************
+    //********************* KONSTRUKTOR ***************************************
     public ChatApplication() {
         initComponents();
         //FOKUS auf sendleiste setzten
-        sendMessageTextField.requestFocus();
+        userNameTextField.requestFocus();
         userClient = new Client(this);
+        
+        //Bereich deaktivieren wenn noch nicht eingelogged
+        chatArea(false);
     }
     
-    //********************** PUBLIC METHODEN ******************************
+    //************************* PUBLIC METHODEN *******************************
+    public void addUsers(Map<String, String> usersMap) {
+        //Aktuelle Map der angemeldeten Users beim Server
+        this.usersMap = usersMap;
+        
+        //Nachdem die aktuelle UsersMap eingetroffen ist, soll die GUI aktualisiert werden
+        refreshGUI();
+    }
+    
+    /**
+     * Stellt den GUI bereich auf eingeloggt um
+     */
+    public void userAccepted() {
+        loggedIn = true;
+        //Login bereich ausgrauen
+        loginArea(false);
+        //Chat bereich zur Verfügung stellen
+        chatArea(true);
+        //startet die beiden anderen Arbeitsthreads (b und c)
+        userClient.startJob();
+    }
+    
+    /**
+     * Stellt den GUI bereich auf nicht eingeloggt ein
+     */
+    public void userDeclined(String reason) {
+        JOptionPane.showMessageDialog(null, reason);
+    }
     
     /**
      * @param args the command line arguments
@@ -54,6 +87,30 @@ public class ChatApplication extends javax.swing.JFrame {
         });
     }
     //************************* PRIVATE METHODEN ****************************
+    private void chatArea(boolean bool) {
+        this.receivedMessageTextArea.setEnabled(bool);
+        this.sendMessageTextField.setEnabled(bool);
+        this.usersTextArea.setEnabled(bool);
+        this.sendButton.setEnabled(bool);
+    }
+    
+     private void loginArea(boolean bool) {
+         this.userNameTextField.setEnabled(bool);
+         this.ipTextField.setEnabled(bool);
+    }
+    
+    /**
+     * Aktualisiert die Liste der aktuell eingeloggten Users in der GUI
+     */
+    private void refreshGUI() {
+        //Usernamen extrahieren
+        Set<String> userNames = usersMap.keySet();
+        
+        //Alle Usernamen hinzufügen
+        for(String userName : userNames) {
+            usersTextArea.setText(userName + "\n");
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -112,7 +169,19 @@ public class ChatApplication extends javax.swing.JFrame {
 
         userNameLabel.setText("Username:");
 
+        userNameTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                userNameTextFieldActionPerformed(evt);
+            }
+        });
+
         ipLabel.setText("Hostname:");
+
+        ipTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ipTextFieldActionPerformed(evt);
+            }
+        });
 
         loginButton.setText("Login");
         loginButton.addActionListener(new java.awt.event.ActionListener() {
@@ -126,65 +195,61 @@ public class ChatApplication extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(sendMessageLabel)
-                                    .addComponent(receivedMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(116, 116, 116)
-                                .addComponent(sendButton))
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(sendMessageTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(32, 32, 32)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(usersLabel)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(userNameLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(userNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(ipLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ipTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(loginButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1)
+                            .addComponent(sendMessageTextField)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(sendMessageLabel)
+                                    .addComponent(receivedMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(userNameLabel)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(userNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(92, 92, 92)
+                                        .addComponent(ipLabel)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(ipTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 74, Short.MAX_VALUE)))
+                        .addGap(19, 19, 19))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(282, 282, 282)
+                        .addComponent(sendButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(usersLabel)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(loginButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(userNameLabel)
+                    .addComponent(userNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ipLabel)
+                    .addComponent(loginButton)
+                    .addComponent(ipTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(36, 36, 36)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(receivedMessageLabel)
+                    .addComponent(usersLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(userNameLabel)
-                            .addComponent(userNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(ipLabel)
-                            .addComponent(ipTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(loginButton))
-                        .addGap(36, 36, 36)
-                        .addComponent(receivedMessageLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
                         .addComponent(sendMessageLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(sendMessageTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(usersLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sendButton)
+                        .addComponent(sendMessageTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(sendButton))
+                    .addComponent(jScrollPane2))
                 .addContainerGap())
         );
 
@@ -205,7 +270,16 @@ public class ChatApplication extends javax.swing.JFrame {
         String userName = userNameTextField.getText();
         String ip = ipTextField.getText();
         System.out.println("Eingegebener Username: " + userName + " eingegebene IP: " + ip);
+        userClient.connect(userName, ip);
     }//GEN-LAST:event_loginButtonActionPerformed
+
+    private void userNameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userNameTextFieldActionPerformed
+        loginButtonActionPerformed(evt);
+    }//GEN-LAST:event_userNameTextFieldActionPerformed
+
+    private void ipTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ipTextFieldActionPerformed
+        loginButtonActionPerformed(evt);
+    }//GEN-LAST:event_ipTextFieldActionPerformed
 
     //****************** GENERIERTE ATTRIBUTE *****************************
     // Variables declaration - do not modify//GEN-BEGIN:variables
