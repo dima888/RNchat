@@ -32,7 +32,7 @@ public class ChatApplication extends javax.swing.JFrame {
     public void addUsers(Map<String, String> usersMap) {
         //Aktuelle Map der angemeldeten Users beim Server
         this.usersMap = usersMap;
-        
+       
         //Nachdem die aktuelle UsersMap eingetroffen ist, soll die GUI aktualisiert werden
         refreshGUI();
     }
@@ -111,10 +111,12 @@ public class ChatApplication extends javax.swing.JFrame {
     private void refreshGUI() {
         //Usernamen extrahieren
         Collection<String> userNames = usersMap.values();
+        //resetet den Inhalt um nicht duppliziert anzuzeigen
+        usersTextArea.setText("");
         
         //Alle Usernamen hinzufügen
         for(String userName : userNames) {
-            usersTextArea.setText(userName + "\n");
+            usersTextArea.append(userName + "\n");
         }
     }
     /**

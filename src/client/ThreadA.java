@@ -114,7 +114,7 @@ public class ThreadA extends Thread {
     /**
      * Aktualisiert die Liste der angemeldeten Users in der GUI
      * @param String usersList - erwartet die Antwort des Servers auf die Anfrage
-     * INFO
+     * INFO 141.22.31.155
      */
     private void refreshUsersList(String usersList) {
         Map<String, String> usersMap = new HashMap<>();
