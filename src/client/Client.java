@@ -6,33 +6,31 @@ public class Client {
     private ThreadB b;
     private ThreadC c;
     
-    private boolean userAccepted = false;
+    private ChatApplication gui;
     
-    public Client(String userName, String ip) {
-        a = new ThreadA(userName, ip);
-        b = new ThreadB();
-        c = new ThreadC();
-        startJob();
+    public Client(ChatApplication loginGUI) {
+        this.gui = gui;
     }
     
-    private void startJob() {
+    public void connect(String userName, String ip) {
+        a = new ThreadA(gui, userName, ip);
         a.start();
-        if(a.userAccepted()) {
-            userAccepted = true;
-            b.start();
-            c.start();
-        } else {
-            a.interrupt();
-        }
     }
     
-    public void interruptThreads() {
+     public void interruptThreads() {
         a.interrupt();
         b.interrupt();
         c.interrupt();
     }
     
-    public boolean getUserAccepted() {
-        return userAccepted;
+    private void startJob() {
+        a.start();
+        if(a.userAccepted()) {
+            b.start();
+            c.start();
+        } else {
+            a.interrupt();
+            System.err.println("Benutzername wurde nicht akzeptiert");
+        }
     }
 }
