@@ -4,6 +4,7 @@
  */
 package server;
 
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -12,8 +13,14 @@ import java.util.Scanner;
  */
 public class ServerCommand {
     
+    private UserManagement userManagement;
     private static String ok = "OK\n";
     
+    
+    //******************SETTER*****************
+    public void setUserManagement(UserManagement userManagement) {
+        this.userManagement = userManagement;        
+    }
     
     /**
      * Nimmt den Benutzername von Client entgegen mit den Zusatz new 
@@ -30,10 +37,46 @@ public class ServerCommand {
             return Error.reasonEmpty;
         }
         
-                
-        String result = "";
+        //Username aus den comamnd scheiden
+        String username = getISecondPartFromCommand(command);
         
-        return result;
+        //Pruefen ob username length > 20 ist
+        if(username.length() > 20) {
+            return Error.reasonUsernameToLong;
+        }       
+        
+        //Nach Sonderzeichen pruefen
+        int i;
+//        for(i = 0; i < username.toCharArray().length; i++) {
+//            if(username.toCharArray()[0] == u00FCbertrag) {
+//                return Error.reasonBlankInUsername;
+//            }
+//        }                
+        
+        //Pruefen ob in username leerzeichen enthalten sind
+        for(i = 0; i < username.toCharArray().length; i++) {
+            if(username.toCharArray()[i] == 0x20) { 
+                return Error.reasonBlankInUsername;
+            }
+        }             
+        
+        //Pruefen, ob user in unserer liste vorhanden ist
+        if (userManagement.getAccountMap().isEmpty()) {
+            userManagement.doUserInAccountMap(username, "whatever");
+        } else {
+            for (Map.Entry<String, String> accoutMap : userManagement.getAccountMap().entrySet()) {
+                if (accoutMap.getKey().toLowerCase().compareTo(username.toLowerCase()) == 0) {
+                    System.out.println("Fuege benutzer ein");
+                    return Error.reasonUserExists;
+                } else {
+                    System.out.println("Fuege benutzer ein");
+                    userManagement.doUserInAccountMap(username, "whatever");
+                }
+            }
+        }
+
+        
+        return ok;
     }
     
     /**
@@ -69,13 +112,40 @@ public class ServerCommand {
         return firstPartOfcommand;
     }
     
+    /**
+     * Hollt fuer uns den inhalt nach einen Schluesselwort(new ....)
+     * @param command
+     * @return 
+     */
+    private String getISecondPartFromCommand(String command) {
+        String secondPart = "";
+        Scanner scanner = new Scanner(command);
+        scanner.next(); 
+       String secondPartPsydo = scanner.nextLine();
+       
+       int i, j;
+       for(i = 0; i < secondPartPsydo.toCharArray().length; i++) {
+           if(secondPartPsydo.toCharArray()[i] != 0x20) {
+               
+               for(j = i; j < secondPartPsydo.toCharArray().length; j++) {
+                   secondPart += secondPartPsydo.toCharArray()[j];
+               }
+               break;
+           }
+       }
+       
+        System.out.println(secondPart);
+        return secondPart;
+    }
+    
     public String commandNotExisted() {
         return Error.reasonCommandNotExisted;
     }
     
     public static void main(String[] args) {
-//        ServerCommand s = new ServerCommand();
-//        System.out.println(s.checkCommand("NEW Huantochnter"));
+        ServerCommand serverCommand = new ServerCommand();
+        UserManagement userManagement = new UserManagement();
+        serverCommand.setUserManagement(userManagement);
         
     }
 }

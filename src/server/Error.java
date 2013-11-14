@@ -12,8 +12,10 @@ public class Error {
     
     private static String error = "ERROR ";
     
-    public static String reasonUser = error + "the user command is incorrect";
-    public static String reasonUserExists = error + "user allready exists";
-    public static String reasonEmpty = error + "Command wars empty";
-    public static String reasonCommandNotExisted = error + "Command not existed";
+    public static String reasonUser = error + "the user command is incorrect ...\n";
+    public static String reasonUserExists = error + "user allready exists ...\n";
+    public static String reasonEmpty = error + "Command wars empty ...\n";
+    public static String reasonCommandNotExisted = error + "Command not existed ...\n";
+    public static String reasonUsernameToLong = error + "username max length = 20 ...\n";
+    public static String reasonBlankInUsername = error + "blank in username is not allowed ...\n";
 }
