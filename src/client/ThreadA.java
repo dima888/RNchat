@@ -12,10 +12,11 @@ import java.util.Scanner;
 
 public class ThreadA extends Thread {
     
-    //**************************** ATTRIBUTE ********************************
+    //**************************** ATTRIBUTE **********************************
     private ChatApplication gui;
-    
     private final String userName;
+    private Map<String, String> userMap = new HashMap<>();
+    private boolean userAccepted = false;
     
     //IP und Port benötigt, um sich mit einem Server zu connecten
     private final String SERVER_IP;
@@ -28,25 +29,19 @@ public class ThreadA extends Thread {
     private DataOutputStream outToServer;
     private BufferedReader inFromServer;
     
-    private Map<String, String> userMap = new HashMap<>();
-    
-    private boolean userAccepted = false;
-    
-    //************************ KONSTRUKTOR **********************************
+    //*************************** KONSTRUKTOR *********************************
     public ThreadA(ChatApplication gui, String userName, String SERVER_IP) {
         this.gui = gui;
         this.userName = userName;
         this.SERVER_IP = SERVER_IP;
     }
-    //************************* PUBLIC METHODEN *****************************
     
+    //************************** PUBLIC METHODEN ******************************
     @Override
     public void run() {
         try {
            //Mit Server connecten
-           System.out.println("Verbindung zum Server herstellen --> Nachricht aus THREAD A");
            clientSocket = new Socket(SERVER_IP, SERVER_PORT);
-           System.out.println("CONNECTEN ERFOLGREICH --> NACHRICHT AUS THREAD A");
             
            //Streams initialisieren
            outToServer = new DataOutputStream(clientSocket.getOutputStream());
@@ -97,7 +92,7 @@ public class ThreadA extends Thread {
         return userAccepted;
     }
            
-    //********************** PRIVATE METHODEN ******************************
+    //*********************** PRIVATE METHODEN ********************************
     private void writeToServer(String request) throws IOException {
         /* Sende eine Zeile zum Server */
         outToServer.writeBytes(request + '\n');
@@ -126,6 +121,6 @@ public class ThreadA extends Thread {
             usersMap.put(scanner.next(), scanner.next());
         }
         
-        gui.addUsers(usersMap);
+        gui.setUsers(usersMap);
     }
 }

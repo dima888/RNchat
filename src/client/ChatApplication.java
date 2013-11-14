@@ -3,16 +3,17 @@ package client;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import javax.swing.JOptionPane;
 
 public class ChatApplication extends javax.swing.JFrame {
 
-    //*************************** ATTRIBUTE ***********************************
+    //**************************** ATTRIBUTE **********************************
     private Client userClient;
     private Map<String, String> usersMap = new HashMap<>();
     private boolean loggedIn = false;
     
-    //********************* KONSTRUKTOR ***************************************
+    //*************************** KONSTRUKTOR *********************************
     public ChatApplication() {
         initComponents();
         //Definieren was beim Schließen der GUI passieren soll
@@ -28,13 +29,25 @@ public class ChatApplication extends javax.swing.JFrame {
         chatArea(false);
     }
     
-    //************************* PUBLIC METHODEN *******************************
-    public void addUsers(Map<String, String> usersMap) {
+    //************************** PUBLIC METHODEN ******************************
+    /**
+     * Setzt die UsersMap auf die übergebene
+     * @param Map<String, String> usersMap
+     */
+    public void setUsers(Map<String, String> usersMap) {
         //Aktuelle Map der angemeldeten Users beim Server
         this.usersMap = usersMap;
        
         //Nachdem die aktuelle UsersMap eingetroffen ist, soll die GUI aktualisiert werden
         refreshGUI();
+    }
+    
+    /**
+     * Getter für die Map mit Usern und Hostnames
+     * @return 
+     */
+    public Set<String> getHostnames() {
+        return usersMap.keySet();
     }
     
     /**
@@ -55,6 +68,14 @@ public class ChatApplication extends javax.swing.JFrame {
      */
     public void userDeclined(String reason) {
         JOptionPane.showMessageDialog(null, reason);
+    }
+    
+    /**
+     * Zeigt die erhaltene Nachricht von einem Benutzer in der GUI an
+     * @param String message  - Nachricht von einem Benutzer
+     */
+    public void showReceivedMessage(String message) {
+        receivedMessageTextArea.append(message + "\n");
     }
     
     /**
@@ -91,7 +112,12 @@ public class ChatApplication extends javax.swing.JFrame {
             }
         });
     }
-    //************************* PRIVATE METHODEN ****************************
+    
+    //*********************** PRIVATE METHODEN ********************************
+    /**
+     * Setzt die Zugriffserlaubnis auf den Chatbereich
+     * @param boolean bool - bei true Chatbereich aktiviert, sonst nicht 
+     */
     private void chatArea(boolean bool) {
         this.receivedMessageTextArea.setEnabled(bool);
         this.sendMessageTextField.setEnabled(bool);
@@ -99,10 +125,14 @@ public class ChatApplication extends javax.swing.JFrame {
         this.sendButton.setEnabled(bool);
     }
     
-     private void loginArea(boolean bool) {
-         this.userNameTextField.setEnabled(bool);
-         this.ipTextField.setEnabled(bool);
-         this.loginButton.setEnabled(bool);
+    /**
+     * Setzt die Zugriffserlaubnis auf den Loginbereich
+     * @param boolean bool - bei true Loginbereich aktiviert, sonst nicht 
+     */
+    private void loginArea(boolean bool) {
+        this.userNameTextField.setEnabled(bool);
+        this.ipTextField.setEnabled(bool);
+        this.loginButton.setEnabled(bool);
     }
     
     /**
@@ -276,14 +306,18 @@ public class ChatApplication extends javax.swing.JFrame {
     }//GEN-LAST:event_sendMessageTextFieldActionPerformed
 
     private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendButtonActionPerformed
-        
+        String input = sendMessageTextField.getText();
+        //Nur abschicken, wenn nicht leer
+        if(! input.isEmpty()) {
+            userClient.sendMessage(input);
+            sendMessageTextField.setText("");
+        }
     }//GEN-LAST:event_sendButtonActionPerformed
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
         //eingegebenen Usernamen holen
         String userName = userNameTextField.getText();
         String ip = ipTextField.getText();
-        System.out.println("Eingegebener Username: " + userName + " eingegebene IP: " + ip);
         userClient.connect(userName, ip);
     }//GEN-LAST:event_loginButtonActionPerformed
 

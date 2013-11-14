@@ -8,6 +8,8 @@ public class Client {
     private ThreadC c;
     
     private ChatApplication gui;
+    private String ip;
+    private String userName;
     
     //********************* KONSTRUKTOR ***************************************
     public Client(ChatApplication gui) {
@@ -22,6 +24,8 @@ public class Client {
      *             aufgebaut werden soll
      */
     public void connect(String userName, String ip) {
+        this.ip = ip;
+        this.userName = userName;
         a = new ThreadA(gui, userName, ip);
         a.start();
     }
@@ -31,7 +35,6 @@ public class Client {
      */
     public void interruptThreads() {
         a.interrupt();
-        b.interrupt();
         c.interrupt();
     }
     
@@ -41,16 +44,19 @@ public class Client {
     public void startJob() {
         System.out.println("IN CLIENT ABFRAGE: " + a.userAccepted());
         if(a.userAccepted()) {
-            b = new ThreadB(gui);
             c = new ThreadC(gui);
-            
-            b.start();
             c.start();
         } else {
             a.interrupt();
-            //System.err.println("Benutzername wurde nicht akzeptiert");
         }
     }
     
-    //************************ PRIVATE METHODEN ******************************
+    /**
+     * Sendet eine Nachricht an alle angemeldeten Benutzer beim Server
+     * @param String message  - erwartet eine Nachricht die gesendet werden soll
+     */
+    public void sendMessage(String message) {
+        b = new ThreadB(gui, message, userName);
+        b.start();
+    }
 }

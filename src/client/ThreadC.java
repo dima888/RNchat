@@ -10,18 +10,21 @@ import java.util.logging.Logger;
 
 public class ThreadC extends Thread {
 
-    final static int SERVER_PORT = 50_001;
-    final static int BUFFER_SIZE = 1024;
+    //**************************** ATTRIBUTE **********************************
+    private final int SERVER_PORT = 50_001;
+    private final int BUFFER_SIZE = 1024;
     private DatagramSocket serverSocket; // UDP-Socketklasse
     private InetAddress receivedIPAddress; // IP-Adresse des Clients
     private int receivedPort; // Port auf dem Client
     
     private ChatApplication gui;
     
+    //*************************** KONSTRUKTOR *********************************
     public ThreadC(ChatApplication gui) {
         this.gui = gui;
     }
 
+    //************************** PUBLIC METHODEN ******************************
     @Override
     public void run() {
         try {
@@ -32,13 +35,17 @@ public class ThreadC extends Thread {
                     + SERVER_PORT);
 
             while (!isInterrupted()) {
-                
+                String message = readFromClient();
+                gui.showReceivedMessage(message);
             }
         } catch (SocketException ex) {
+            Logger.getLogger(ThreadC.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(ThreadC.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    //*********************** PRIVATE METHODEN ********************************
     private String readFromClient() throws IOException {
         /* Liefere den nächsten String vom Server */
         String receiveString = "";
@@ -59,21 +66,5 @@ public class ThreadC extends Thread {
         System.out.println("UDP Server got from Client: " + receiveString);
 
         return receiveString;
-    }
-
-    private void writeToClient(String sendString) throws IOException {
-        /* Sende den String als UDP-Paket zum Client */
-
-        /* String in Byte-Array umwandeln */
-        byte[] sendData = sendString.getBytes();
-
-        /* Antwort-Paket erzeugen */
-        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length,
-                receivedIPAddress,
-                receivedPort);
-        /* Senden des Pakets */
-        serverSocket.send(sendPacket);
-
-        System.out.println("UDP Server has sent the message: " + sendString);
     }
 }
