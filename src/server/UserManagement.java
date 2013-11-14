@@ -18,19 +18,16 @@ public class UserManagement {
     //TODO: Pruefen ob user doppelt vorhanden ist
     private Map<String, String> accountMap = new HashMap();
     
-    Map<String, String> getAccountList() {
-        return this.accountMap;
+    Map<String, String> getAccountMap() {
+        return accountMap;
     }
     
     /**
      * Tut einen User in unsere accountMap rein, wenn der noch nicht in der accountMap vorhanden ist
      * @param String user  - User der auf unseren Server connected
      */
-    void doUserInAccountMap(String user) {
-        if(this.accountMap.get(user) == null) {
-            
-        }
+    void doUserInAccountMap(String user, String hostname) {
+        accountMap.put(user, hostname) ;
+    
     }
-    
-    
 }
