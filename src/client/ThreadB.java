@@ -6,6 +6,9 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Set;
 
+/**
+ * Ist für das Senden einer Nachricht an alle Teilnehmer zuständig
+ */
 public class ThreadB extends Thread {
     
     //**************************** ATTRIBUTE **********************************
@@ -32,6 +35,9 @@ public class ThreadB extends Thread {
             //Set der Hostnames beschaffen
             Set<String> hostNames = gui.getHostnames();
             
+            //Vor dem Senden UTF-8 codieren
+            formatToUTF8();
+            
             //Über Alle Hostnames iterieren und Nachricht schicken
             for(String hostname : hostNames) {
                 clientSocket = new DatagramSocket();
@@ -46,6 +52,18 @@ public class ThreadB extends Thread {
     }
     
     //*********************** PRIVATE METHODEN ********************************
+    /**
+     * Formatiert die über Konstruktor erhaltene zu sendende Nachricht nach UTF-8
+     */
+    private void formatToUTF8() {
+        throw new UnsupportedOperationException("Noch nicht implementiert!");
+    }
+    
+    /**
+     * Sendet eine Nachricht an den Server
+     * @param String sendString - erwartet die zu sendende Nachricht
+     * @throws IOException 
+     */
     private void writeToServer(String sendString) throws IOException {
         /* Sende den String als UDP-Paket zum Server */
 

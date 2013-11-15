@@ -12,21 +12,21 @@ public class ChatApplication extends javax.swing.JFrame {
     private Client userClient;
     private Map<String, String> usersMap = new HashMap<>();
     private boolean loggedIn = false;
+    private final int MAX_LENGTH_OF_LINE = 100; //Anzahl Zeichen in einer Zeile
     
     //*************************** KONSTRUKTOR *********************************
     public ChatApplication() {
         initComponents();
-        //Definieren was beim Schließen der GUI passieren soll
-        //TODO
-        
-        //FOKUS auf sendleiste setzten
-        userNameTextField.requestFocus();
-        
         //Client Objekt erzeugen und diese GUI übergeben
         userClient = new Client(this);
         
-        //Bereich deaktivieren wenn noch nicht eingelogged
+        //Bereich beim Start der GUI deaktivieren --> aktiviert, sobald eingeloggt
         chatArea(false);
+        
+        //Automatisches "Scrollen" aktivieren
+        //TODO: TESTEN DIESER FUNKTIONEN
+        receivedMessageTextArea.setAutoscrolls(true);
+        usersTextArea.setAutoscrolls(true);
     }
     
     //************************** PUBLIC METHODEN ******************************
@@ -123,6 +123,10 @@ public class ChatApplication extends javax.swing.JFrame {
         this.sendMessageTextField.setEnabled(bool);
         this.usersTextArea.setEnabled(bool);
         this.sendButton.setEnabled(bool);
+        if(bool == true) {
+            //FOKUS auf Sendeleiste setzten
+            this.sendMessageTextField.requestFocus();
+        }
     }
     
     /**
@@ -133,6 +137,10 @@ public class ChatApplication extends javax.swing.JFrame {
         this.userNameTextField.setEnabled(bool);
         this.ipTextField.setEnabled(bool);
         this.loginButton.setEnabled(bool);
+        if (bool == true) {
+            //FOKUS auf userNamen setzten
+            this.userNameTextField.requestFocus();
+        }
     }
     
     /**
@@ -172,6 +180,8 @@ public class ChatApplication extends javax.swing.JFrame {
         ipLabel = new javax.swing.JLabel();
         ipTextField = new javax.swing.JTextField();
         loginButton = new javax.swing.JButton();
+        leftCharsLabel = new javax.swing.JLabel();
+        counterOfTypedCharsLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Chat-Anwendung");
@@ -184,6 +194,11 @@ public class ChatApplication extends javax.swing.JFrame {
         sendMessageTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 sendMessageTextFieldActionPerformed(evt);
+            }
+        });
+        sendMessageTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                sendMessageTextFieldKeyPressed(evt);
             }
         });
 
@@ -233,6 +248,10 @@ public class ChatApplication extends javax.swing.JFrame {
             }
         });
 
+        leftCharsLabel.setText("Übrige Zeichen: ");
+
+        counterOfTypedCharsLabel.setText("100");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -242,22 +261,30 @@ public class ChatApplication extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1)
-                            .addComponent(sendMessageTextField)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(sendMessageLabel)
-                                    .addComponent(receivedMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jScrollPane1)
+                                    .addComponent(sendMessageTextField)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(userNameLabel)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(userNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(92, 92, 92)
-                                        .addComponent(ipLabel)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(ipTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 74, Short.MAX_VALUE)))
-                        .addGap(19, 19, 19))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(receivedMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(userNameLabel)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(userNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(92, 92, 92)
+                                                .addComponent(ipLabel)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(ipTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGap(0, 74, Short.MAX_VALUE)))
+                                .addGap(19, 19, 19))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(sendMessageLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(leftCharsLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(counterOfTypedCharsLabel)
+                                .addGap(21, 21, 21))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(282, 282, 282)
                         .addComponent(sendButton)
@@ -288,7 +315,10 @@ public class ChatApplication extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
-                        .addComponent(sendMessageLabel)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(sendMessageLabel)
+                            .addComponent(leftCharsLabel)
+                            .addComponent(counterOfTypedCharsLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(sendMessageTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -334,12 +364,24 @@ public class ChatApplication extends javax.swing.JFrame {
         userClient.interruptThreads();
     }//GEN-LAST:event_formWindowClosing
 
+    private void sendMessageTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sendMessageTextFieldKeyPressed
+        //Anzeigen, wieviel Zeichen noch zur Verfügung stehen für diese Nachricht
+        counterOfTypedCharsLabel.setText( "" + (MAX_LENGTH_OF_LINE - sendMessageTextField.getText().length()) );
+        
+        //Falls die Maximale Anzahl an Zeichen erreicht ist, darf nichts weiteres eingegeben werden
+        if(sendMessageTextField.getText().length() >= MAX_LENGTH_OF_LINE) {
+            sendMessageTextField.setEditable(false);
+        }
+    }//GEN-LAST:event_sendMessageTextFieldKeyPressed
+
     //****************** GENERIERTE ATTRIBUTE *****************************
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel counterOfTypedCharsLabel;
     private javax.swing.JLabel ipLabel;
     private javax.swing.JTextField ipTextField;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel leftCharsLabel;
     private javax.swing.JButton loginButton;
     private javax.swing.JLabel receivedMessageLabel;
     private javax.swing.JTextArea receivedMessageTextArea;

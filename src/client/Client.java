@@ -1,5 +1,8 @@
 package client;
 
+/**
+ * Schnittstelle zwischen Arbeitsthreads und GUI
+ */
 public class Client {
     
     //*************************** ATTRIBUTE ***********************************
@@ -34,20 +37,24 @@ public class Client {
      * Terminiert die laufenden Threads
      */
     public void interruptThreads() {
-        a.interrupt();
-        c.interrupt();
+        //Falls nicht eingeloggt --> nicht auf button gedrückt --> connect nicht aufgerufen
+        if(a != null) {
+            a.interrupt();
+        }
+        
+        //Falls nicht erfolgreich eingeloggt --> gui --> startJob nicht ausgeführt
+        if(c != null) {
+            c.interrupt();
+        }
     }
     
     /**
      * Startet die Arbeitsthreads
      */
     public void startJob() {
-        System.out.println("IN CLIENT ABFRAGE: " + a.userAccepted());
         if(a.userAccepted()) {
             c = new ThreadC(gui);
             c.start();
-        } else {
-            a.interrupt();
         }
     }
     

@@ -10,6 +10,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * Ist für die Kommunikation mit dem Server zuständig
+ * Alle 5 Sekunden wird die aktuelle Teilnehmerliste vom Server
+ * geholt und angezeigt
+ */
 public class ThreadA extends Thread {
     
     //**************************** ATTRIBUTE **********************************
@@ -59,17 +64,17 @@ public class ThreadA extends Thread {
                gui.userDeclined(answer);
            }
            
-           //User akzeptiert und nicht interrupted
-           while((! this.isInterrupted()) && userAccepted) {
-               //Liste der aktuell angemeldeten Users anfordern
-               writeToServer("INFO");
-               //Antwort des Servers
-               answer = readFromServer();
-               //Aktuallisert die userList in der GUI
-               refreshUsersList(answer);
-               //5 Sekunden schlafen / warten
-               this.sleep(5000);
-           }
+            //User akzeptiert und nicht interrupted
+            while ((!this.isInterrupted()) && userAccepted) {
+                //Liste der aktuell angemeldeten Users anfordern
+                writeToServer("INFO");
+                //Antwort des Servers
+                answer = readFromServer();
+                //Aktuallisert die userList in der GUI
+                refreshUsersList(answer);
+                //5 Sekunden schlafen / warten
+                this.sleep(5000);
+            }
         } catch (UnknownHostException ex) {
             System.err.println("EXCEPTION IN THREAD A: " + ex);
         } catch (IOException ex) {

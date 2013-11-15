@@ -8,6 +8,10 @@ import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Ist für den Empfang aller Datagramme (Pakete) von anderen Teilnehmern
+ * (Lauscht beständig = Server)
+ */
 public class ThreadC extends Thread {
 
     //**************************** ATTRIBUTE **********************************
@@ -28,15 +32,19 @@ public class ThreadC extends Thread {
     @Override
     public void run() {
         try {
-            //UDP-Socket erzeugen (KEIN VERBINDUNGSAUFBAU!)
-            //Socket wird an den ServerPort gebunden
+            /* UDP-Socket erzeugen (KEIN VERBINDUNGSAUFBAU!)
+             * Socket wird an den ServerPort gebunden */
             serverSocket = new DatagramSocket(SERVER_PORT);
             System.out.println("UDP Server: Waiting for connection - listening UDP port "
                     + SERVER_PORT);
 
             while (!isInterrupted()) {
+                //Auf Nachrichten (lauschen)
                 String message = readFromClient();
-                gui.showReceivedMessage(message);
+                //Vor dem Anzeigen UTF-8 codieren
+                String formatedString = formatToUTF8(message);
+                //formatierten String in der GUI anzeigen
+                gui.showReceivedMessage(formatedString);
             }
         } catch (SocketException ex) {
             Logger.getLogger(ThreadC.class.getName()).log(Level.SEVERE, null, ex);
@@ -46,6 +54,19 @@ public class ThreadC extends Thread {
     }
 
     //*********************** PRIVATE METHODEN ********************************
+    /**
+     * Formatiert die über Konstruktor erhaltene zu sendende Nachricht nach
+     * UTF-8
+     */
+    private String formatToUTF8(String message) {
+        throw new UnsupportedOperationException("Noch nicht implementiert!");
+    }
+    
+    /**
+     * Zum Lesen der Antworten auf Anfragen vom Server
+     * @return String - Antwort des Servers
+     * @throws IOException 
+     */
     private String readFromClient() throws IOException {
         /* Liefere den nächsten String vom Server */
         String receiveString = "";
