@@ -4,6 +4,8 @@
  */
 package server;
 
+import java.io.IOException;
+import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +20,7 @@ public class ServerCommand {
     private UserManagement userManagement;
     private static String ok = "OK\n";
     
-    private String currentHost = "whatever";
+    String currentHost = "whatever";
     
     
     //******************SETTER*****************
@@ -87,14 +89,15 @@ public class ServerCommand {
     /**
      * Sendet an den Client Bye, loescht ihn aus der Teilnehmnerliste und schliesst die TCP-Verbindung zu Ihm
      * @return String
+     * TODO: LOESCHT WIRKUERLICH, MUSS NOCH DEN RICHTIGEN ZUM LOESCHEN AUS DER LISTE ERMITTELN
      */
-    synchronized public String byeComand() {        
+    synchronized public String byeComand() throws IOException {        
         String result = "BYE \n";
         
         for(Map.Entry<String, String> accountMap : userManagement.getAccountMap().entrySet()) {
             Map<String, String> currentAccountMap = new HashMap();
             if(accountMap.getValue().compareTo(currentHost) == 0) {
-                userManagement.getAccountMap().remove(accountMap.getKey());
+                userManagement.getAccountMap().remove(accountMap.getKey());                
                 break;
             }            
         }        

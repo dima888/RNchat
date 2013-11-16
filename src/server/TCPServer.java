@@ -77,32 +77,33 @@ public class TCPServer {
            this.threadNumber = number;
            this.socket = socket;
            this.serverCommand = serverCommand;
+           this.serverCommand.currentHost = socket.getInetAddress().toString();
        }       
               
-       @Override 
+       @Override
        public void run() {
-           System.out.println("Client Nummer: " + threadNumber +  " bei getretten");
+           System.out.println("Client Nummer: " + threadNumber + " bei getretten");
            String messageBuffer;
            try {
                /* Socket-Basisstreams durch spezielle Streams filtern */
                inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                outToClient = new DataOutputStream(socket.getOutputStream());
-               
-                          while(threadRunning) {
-               
-               System.out.println("Server wartet auf eine Nachricht");
-               messageBuffer = readFromClient(); //Warte auf eingehende Nachricht von Client
-               System.out.println("Server hat Nachricht bekommen");
 
-                                             
-               //Hier kommt die pruefung rein, ob der eingegebene Befehl von Client gueltig ist
-               checkCommand(messageBuffer);
-               
-           }
-               
+               while (threadRunning) {
+ 
+                  System.out.println("Server wartet auf eine Nachricht");
+                   messageBuffer = readFromClient(); //Warte auf eingehende Nachricht von Client
+                   System.out.println("Server hat Nachricht bekommen");
+
+
+                   //Hier kommt die pruefung rein, ob der eingegebene Befehl von Client gueltig ist
+                   checkCommand(messageBuffer);
+
+               }
+
            } catch (IOException ex) {
                Logger.getLogger(TCPServerThread.class.getName()).log(Level.SEVERE, null, ex);
-           }                    
+           }
        }
        
        /**
@@ -117,7 +118,8 @@ public class TCPServer {
        
        /**
         * Sendet eine Nachricht an einen Client 
-        * @param String reply  - Die Nachricht, die an den Client gesendet wirdS
+        * @param String reply  - Die Nachricht, die an den Client gesendet wird
+        * TODO: HIER KOMMT EINE EXCEPTION, WENN DER BYE BEFEHL AUSGEFUEHRT WIRD
         */
        private void writeToClient(String reply) throws IOException {
                outToClient.writeBytes(reply + "\n");
@@ -126,7 +128,6 @@ public class TCPServer {
        
        /**
         * Prueft die Commandes nach ihrer Gueltigkeit
-        * TODO: Log in setzten
         * @param message 
         */
        private void checkCommand(String message) {                     
@@ -143,7 +144,7 @@ public class TCPServer {
                    switch(serverCommand.checkCommand(message)) {
                    case "new":  writeToClient(Error.reasonNowAllowed); break;
                    case "info":  writeToClient(serverCommand.infoCommand()); break;
-                   case "bye":  writeToClient(serverCommand.byeComand()); break;                       
+                   case "bye":  writeToClient(serverCommand.byeComand()); socket.close();  break;                       
                    default: writeToClient(serverCommand.commandNotExisted());
                     }
                }
