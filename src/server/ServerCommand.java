@@ -18,7 +18,7 @@ import java.util.Scanner;
 public class ServerCommand {
     
     private UserManagement userManagement;
-    private static String ok = "OK\n";
+    private static String ok = "OK\r\n";
     
     String currentHost = "whatever";
     
@@ -36,7 +36,7 @@ public class ServerCommand {
      * Exception -> nap Spiderman (nap != new)
      * @return String
      */
-    synchronized public String newCommand(String command) {
+    synchronized public String newCommand(String command, Socket socket) {
         //Precondition
         if(command.isEmpty()) {
             return Error.reasonEmpty;
@@ -59,13 +59,13 @@ public class ServerCommand {
         //Pruefen, ob user in unserer liste vorhanden ist, wenn nicht fuege neuen hinzu
         Map<String, String> currentAccountMap = new HashMap();
         if (userManagement.getAccountMap().isEmpty()) {            
-            currentAccountMap.put(username, currentHost);
+            currentAccountMap.put(username, socket.getInetAddress().toString());
         } else {
             for (Map.Entry<String, String> accoutMap : userManagement.getAccountMap().entrySet()) {                
                 if (accoutMap.getKey().toLowerCase().compareTo(username.toLowerCase()) == 0) {
                     return Error.reasonUserExists;
                 } else {
-                    currentAccountMap.put(username, currentHost);
+                    currentAccountMap.put(username, socket.getInetAddress().toString());
                 }
             }                    
         }              
@@ -80,10 +80,10 @@ public class ServerCommand {
     synchronized public String infoCommand() {
         String result  = "LIST " + userManagement.getNumberOfUsers() + " ";        
         for(Map.Entry<String, String> account : userManagement.getAccountMap().entrySet()) {
-            result += account.getValue() + " "; 
             result += account.getKey() + " "; 
+            result += account.getValue() + " ";             
         }
-        return result + "\n";
+        return result + "\r\n";
     }
     
     /**
@@ -91,12 +91,12 @@ public class ServerCommand {
      * @return String
      * TODO: LOESCHT WIRKUERLICH, MUSS NOCH DEN RICHTIGEN ZUM LOESCHEN AUS DER LISTE ERMITTELN
      */
-    synchronized public String byeComand() throws IOException {        
-        String result = "BYE \n";
+    synchronized public String byeComand(Socket socket) throws IOException {        
+        String result = "BYE \r\n";
         
         for(Map.Entry<String, String> accountMap : userManagement.getAccountMap().entrySet()) {
             Map<String, String> currentAccountMap = new HashMap();
-            if(accountMap.getValue().compareTo(currentHost) == 0) {
+            if(accountMap.getValue().compareTo(socket.getInetAddress().toString()) == 0) { 
                 userManagement.getAccountMap().remove(accountMap.getKey());                
                 break;
             }            

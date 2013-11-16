@@ -135,7 +135,7 @@ public class TCPServer {
                String loginPuffer = "";
                if(login == false) {
                   switch(serverCommand.checkCommand(message)) {
-                  case "new":  loginPuffer = (serverCommand.newCommand(message)); writeToClient(loginPuffer); break;                    
+                  case "new":  loginPuffer = (serverCommand.newCommand(message, socket)); writeToClient(loginPuffer); break;                    
                   case "info":  writeToClient(Error.reasonNowAllowed); break;
                   case "bye":  writeToClient(Error.reasonNowAllowed); break;                           
                   default: writeToClient(serverCommand.commandNotExisted());
@@ -144,13 +144,13 @@ public class TCPServer {
                    switch(serverCommand.checkCommand(message)) {
                    case "new":  writeToClient(Error.reasonNowAllowed); break;
                    case "info":  writeToClient(serverCommand.infoCommand()); break;
-                   case "bye":  writeToClient(serverCommand.byeComand()); socket.close();  break;                       
+                   case "bye":  writeToClient(serverCommand.byeComand(socket)); socket.close();  break;                       
                    default: writeToClient(serverCommand.commandNotExisted());
                     }
                }
                
                //User einloggen
-               if(loginPuffer.compareTo("OK\n") == 0) {
+               if(loginPuffer.compareTo("OK\r\n") == 0) {
                    System.out.println("Setzte login auf true");
                    login = true;
                }
