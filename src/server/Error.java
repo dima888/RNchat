@@ -19,4 +19,5 @@ public class Error {
     public static String reasonUsernameToLong = error + "username max length = 20 ...\n";
     public static String reasonBlankInUsername = error + "blank in username is not allowed ...\n";
     public static String reasonSpecialCharacter = error + "special character or blank not allowed ...\n";
+    public static String reasonNowAllowed = error + "command in this state not allowed ...\n";
 }
