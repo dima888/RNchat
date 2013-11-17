@@ -60,13 +60,14 @@ public class ServerCommand {
         //Pruefen, ob user in unserer liste vorhanden ist, wenn nicht fuege neuen hinzu
         Map<String, String> currentAccountMap = new HashMap();
         if (userManagement.getAccountMap().isEmpty()) {            
-            currentAccountMap.put(username, socket.getInetAddress().toString());
+            currentAccountMap.put(username, socket.getInetAddress().getHostName());
         } else {
             for (Map.Entry<String, String> accoutMap : userManagement.getAccountMap().entrySet()) {                
                 if (accoutMap.getKey().toLowerCase().compareTo(username.toLowerCase()) == 0) {
                     return Error.reasonUserExists;
                 } else {
-                    currentAccountMap.put(username, socket.getInetAddress().toString());
+                    //currentAccountMap.put(username, socket.getInetAddress().toString());
+                    currentAccountMap.put(username, socket.getInetAddress().getHostName());
                 }
             }                    
         }              
@@ -98,7 +99,7 @@ public class ServerCommand {
         
         for(Map.Entry<String, String> accountMap : userManagement.getAccountMap().entrySet()) {
             Map<String, String> currentAccountMap = new HashMap();
-            if(accountMap.getValue().compareTo(socket.getInetAddress().toString()) == 0) { 
+            if(accountMap.getValue().compareTo(socket.getInetAddress().getHostName()) == 0) { 
                 userManagement.getAccountMap().remove(accountMap.getKey());                
                 break;
             }            
