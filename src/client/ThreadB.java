@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.nio.charset.Charset;
 import java.util.Set;
 
 /**
@@ -56,7 +57,7 @@ public class ThreadB extends Thread {
      * Formatiert die über Konstruktor erhaltene zu sendende Nachricht nach UTF-8
      */
     private void formatToUTF8() {
-        throw new UnsupportedOperationException("Noch nicht implementiert!");
+        message = new String(message.getBytes(), Charset.forName("UTF-8"));
     }
     
     /**

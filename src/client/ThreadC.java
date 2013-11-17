@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,7 +60,7 @@ public class ThreadC extends Thread {
      * UTF-8
      */
     private String formatToUTF8(String message) {
-        throw new UnsupportedOperationException("Noch nicht implementiert!");
+        return new String(message.getBytes(), Charset.forName("UTF-8"));
     }
     
     /**
