@@ -18,7 +18,8 @@ import java.util.Scanner;
 public class ServerCommand {
     
     private UserManagement userManagement;
-    private static String ok = "OK\r\n";
+//    private static String ok = "OK\r\n";
+    private static String ok = "OK";
     
     String currentHost = "whatever";
     
@@ -79,11 +80,12 @@ public class ServerCommand {
      */
     synchronized public String infoCommand() {
         String result  = "LIST " + userManagement.getNumberOfUsers() + " ";        
-        for(Map.Entry<String, String> account : userManagement.getAccountMap().entrySet()) {
-            result += account.getKey() + " "; 
+        for(Map.Entry<String, String> account : userManagement.getAccountMap().entrySet()) {            
             result += account.getValue() + " ";             
+            result += account.getKey() + " "; 
         }
-        return result + "\r\n";
+//        return result + "\r\n";
+        return result;
     }
     
     /**

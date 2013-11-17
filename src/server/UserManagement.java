@@ -19,8 +19,8 @@ public class UserManagement {
     private Map<String, String> accountMap = new HashMap();
     
     //************GETTER************
-    synchronized Map<String, String> getAccountMap() {
-        return accountMap;
+    synchronized Map<String, String> getAccountMap() {                        
+        return accountMap;                
     }
     
     //***********SETTER**************

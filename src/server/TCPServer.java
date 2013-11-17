@@ -5,11 +5,13 @@
 package server;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -92,7 +94,7 @@ public class TCPServer {
                while (threadRunning) {
  
                   System.out.println("Server wartet auf eine Nachricht");
-                   messageBuffer = readFromClient(); //Warte auf eingehende Nachricht von Client
+                   messageBuffer = convertStringToUTF8(readFromClient()); //Warte auf eingehende Nachricht von Client
                    System.out.println("Server hat Nachricht bekommen");
 
 
@@ -136,21 +138,23 @@ public class TCPServer {
                if(login == false) {
                   switch(serverCommand.checkCommand(message)) {
                   case "new":  loginPuffer = (serverCommand.newCommand(message, socket)); writeToClient(loginPuffer); break;                    
-                  case "info":  writeToClient(Error.reasonNowAllowed); break;
-                  case "bye":  writeToClient(Error.reasonNowAllowed); break;                           
-                  default: writeToClient(serverCommand.commandNotExisted());
+//                  case "info":  writeToClient(Error.reasonNowAllowed); break;
+                  case "info":  writeToClient(convertStringToUTF8(Error.reasonNowAllowed)); break;
+                  case "bye":  writeToClient(convertStringToUTF8(Error.reasonNowAllowed)); break;                           
+                  default: writeToClient(convertStringToUTF8(serverCommand.commandNotExisted()));
                  }
                } else {
                    switch(serverCommand.checkCommand(message)) {
-                   case "new":  writeToClient(Error.reasonNowAllowed); break;
-                   case "info":  writeToClient(serverCommand.infoCommand()); break;
-                   case "bye":  writeToClient(serverCommand.byeComand(socket)); socket.close();  break;                       
-                   default: writeToClient(serverCommand.commandNotExisted());
+                   case "new":  writeToClient(convertStringToUTF8(Error.reasonNowAllowed)); break;
+                   case "info":  writeToClient(convertStringToUTF8(serverCommand.infoCommand())); break;
+                   case "bye":  writeToClient(convertStringToUTF8(serverCommand.byeComand(socket))); socket.close();  break;                       
+                   default: writeToClient(convertStringToUTF8(serverCommand.commandNotExisted()));
                     }
                }
                
                //User einloggen
-               if(loginPuffer.compareTo("OK\r\n") == 0) {
+               //if(loginPuffer.compareTo("OK\r\n") == 0) {
+               if(loginPuffer.compareTo("OK") == 0) {
                    System.out.println("Setzte login auf true");
                    login = true;
                }
@@ -159,5 +163,9 @@ public class TCPServer {
            } catch (IOException ex) {
                Logger.getLogger(TCPServerThread.class.getName()).log(Level.SEVERE, null, ex);
            }
+       }
+       
+       private String convertStringToUTF8(String string) {
+        return new String(string.getBytes(), Charset.forName("UTF-8"));
        }
    }

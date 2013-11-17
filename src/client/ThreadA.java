@@ -120,7 +120,6 @@ public class ThreadA extends Thread {
         Map<String, String> usersMap = new HashMap<>();
         Scanner scanner = new Scanner(usersList);
         scanner.next(); //Liefert --> LIST
-        
         int i = Integer.parseInt(scanner.next()); //Liefert --> ANZAHL der folgenden Tupel
         for(; i > 0; i--) {
             usersMap.put(scanner.next(), scanner.next());
