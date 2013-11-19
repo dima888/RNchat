@@ -66,7 +66,6 @@ public class ServerCommand {
                 if (accoutMap.getKey().toLowerCase().compareTo(username.toLowerCase()) == 0) {
                     return Error.reasonUserExists;
                 } else {
-                    //currentAccountMap.put(username, socket.getInetAddress().toString());
                     currentAccountMap.put(username, socket.getInetAddress().getHostName());
                 }
             }                    
@@ -85,7 +84,6 @@ public class ServerCommand {
             result += account.getValue() + " ";             
             result += account.getKey() + " "; 
         }
-//        return result + "\r\n";
         return result;
     }
     
@@ -95,7 +93,7 @@ public class ServerCommand {
      * TODO: LOESCHT WIRKUERLICH, MUSS NOCH DEN RICHTIGEN ZUM LOESCHEN AUS DER LISTE ERMITTELN
      */
     synchronized public String byeComand(Socket socket) throws IOException {        
-        String result = "BYE \r\n";
+        String result = "BYE";
         
         for(Map.Entry<String, String> accountMap : userManagement.getAccountMap().entrySet()) {
             Map<String, String> currentAccountMap = new HashMap();

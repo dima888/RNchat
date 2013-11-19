@@ -113,7 +113,7 @@ public class TCPServer {
         * @return String
         */
        private String readFromClient() throws IOException {
-               String request = inFromClient.readLine();
+               String request = inFromClient.readLine() + "\n";
                System.out.println("Client write to TCPServer: " + request);
                return request;
        }
