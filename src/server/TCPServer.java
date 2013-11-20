@@ -130,7 +130,7 @@ public class TCPServer {
        
        /**
         * Prueft die Commandes nach ihrer Gueltigkeit
-        * @param message 
+        * @param String message  request von client
         */
        private void checkCommand(String message) {                     
            try {
